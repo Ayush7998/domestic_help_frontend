@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homely - Domestic Help Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .auth-tab-content { display: none; }
+        .auth-tab-content.active { display: block; }
+        #helper-modal { transition: opacity 0.3s ease-in-out; }
+        #helper-modal-content { transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; }
+        #helper-modal.active { opacity: 1; pointer-events: auto; }
+        #helper-modal.active #helper-modal-content { transform: scale(1); opacity: 1; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Header / Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('home')">
+                    <svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    <h1 class="text-2xl font-bold text-gray-800">Homely</h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#home" onclick="showPage('home')" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors font-medium">Home</a>
+                    <a href="#booking" onclick="showPage('booking')" id="nav-book-helper" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors font-medium">Book a Helper</a>
+                    <a href="#my-bookings" onclick="showPage('my-bookings')" id="nav-my-bookings" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors font-medium">My Bookings</a>
+                    <a href="#requests" onclick="showPage('requests')" id="nav-requests" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors font-medium hidden">Requests</a>
+                </div>
+                <div class="flex items-center">
+                    <div id="pre-login-nav">
+                        <button onclick="showPage('signin')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-transform hover:scale-105">Sign In</button>
+                    </div>
+                    <div id="post-login-nav" class="hidden items-center space-x-4">
+                         <button onclick="showPage('dashboard')" class="relative h-10 w-10 rounded-full flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                            <img id="nav-profile-pic" class="h-full w-full object-cover hidden" src="" alt="Profile Picture">
+                            <div id="user-initials" class="absolute inset-0 bg-gray-200 text-gray-600 font-bold text-lg flex items-center justify-center"></div>
+                         </button>
+                    </div>
+                    <button class="md:hidden ml-4" id="mobile-menu-button"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-2">
+             <a href="#home" onclick="showPage('home')" class="block nav-link text-gray-600 hover:text-indigo-600">Home</a>
+             <a href="#booking" onclick="showPage('booking')" id="mobile-nav-book-helper" class="block nav-link text-gray-600 hover:text-indigo-600">Book a Helper</a>
+             <a href="#my-bookings" onclick="showPage('my-bookings')" id="mobile-nav-my-bookings" class="block nav-link text-gray-600 hover:text-indigo-600">My Bookings</a>
+             <a href="#requests" onclick="showPage('requests')" id="mobile-nav-requests" class="block nav-link text-gray-600 hover:text-indigo-600 hidden">Requests</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- PAGE 1: HOME -->
+        <div id="home-page" class="page active">
+            <header class="text-center my-12 md:my-20">
+                <h2 class="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">Reliable Home Help,<br>On Your Schedule.</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Find and book trusted, background-verified professionals for all your domestic needs. Quick, easy, and secure.</p>
+                <button onclick="showPage('booking')" class="mt-8 bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transform hover:scale-105 transition-all duration-300">Find Your Helper Today</button>
+            </header>
+            <section class="my-20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                    <div>
+                        <div class="bg-indigo-100 rounded-lg h-16 w-16 flex items-center justify-center mx-auto"><svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                        <h3 class="mt-4 text-xl font-bold text-gray-800">Verified Professionals</h3>
+                        <p class="mt-2 text-gray-600">Every helper on our platform is background-checked and rated by our community.</p>
+                    </div>
+                    <div>
+                        <div class="bg-indigo-100 rounded-lg h-16 w-16 flex items-center justify-center mx-auto"><svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>
+                        <h3 class="mt-4 text-xl font-bold text-gray-800">Flexible Scheduling</h3>
+                        <p class="mt-2 text-gray-600">Book for a few hours or set up a recurring schedule that fits your life.</p>
+                    </div>
+                    <div>
+                        <div class="bg-indigo-100 rounded-lg h-16 w-16 flex items-center justify-center mx-auto"><svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg></div>
+                        <h3 class="mt-4 text-xl font-bold text-gray-800">Secure Payments</h3>
+                        <p class="mt-2 text-gray-600">Pay securely through the app only after the service is completed.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PAGE 2: BOOKING -->
+        <div id="booking-page" class="page">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <section class="lg:col-span-2">
+                    <h3 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-3">Select a Helper</h3>
+                    <div id="helpers-list" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+                </section>
+                <aside class="lg:col-span-1">
+                    <div class="bg-white p-6 rounded-xl shadow-lg sticky top-24">
+                        <h3 class="text-2xl font-bold mb-2 text-gray-800 text-center">Booking Details</h3>
+                        <p id="helper-name-display" class="text-center text-gray-600 mb-6">Select a helper to begin</p>
+                        <form id="booking-form" class="space-y-4">
+                            <input type="hidden" id="helper-id-input" name="helper_id">
+                            <div>
+                                <label for="booking-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                <input type="date" id="booking-date" name="booking_date" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time Slot</label>
+                                <div class="grid grid-cols-2 gap-2" id="time-slots">
+                                    <button type="button" class="time-slot-btn" data-start="09:00" data-end="12:00">9am - 12pm</button>
+                                    <button type="button" class="time-slot-btn" data-start="13:00" data-end="16:00">1pm - 4pm</button>
+                                    <button type="button" class="time-slot-btn" data-start="18:00" data-end="21:00">6pm - 9pm</button>
+                                    <button type="button" id="custom-time-btn" class="time-slot-btn">Custom</button>
+                                </div>
+                                <div id="custom-time-inputs" class="hidden grid grid-cols-2 gap-4 mt-3">
+                                    <div><label for="start-time" class="block text-xs font-medium text-gray-500">Start</label><input type="time" id="start-time" class="w-full p-2 border"></div>
+                                    <div><label for="end-time" class="block text-xs font-medium text-gray-500">End</label><input type="time" id="end-time" class="w-full p-2 border"></div>
+                                </div>
+                                <input type="hidden" id="final-start-time" name="start_time">
+                                <input type="hidden" id="final-end-time" name="end_time">
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Confirm Booking</button>
+                        </form>
+                        <div id="booking-response" class="mt-4 text-center font-medium"></div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- PAGE 3: MY BOOKINGS -->
+        <div id="my-bookings-page" class="page">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-3">My Bookings</h2>
+            <div id="bookings-list" class="space-y-6"></div>
+            <div id="no-bookings" class="hidden text-center py-16">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <h3 class="mt-2 text-xl font-medium text-gray-900">No Bookings Yet</h3>
+                <p class="mt-1 text-sm text-gray-500">You have no upcoming or past bookings.</p>
+                <button type="button" onclick="showPage('booking')" class="mt-6 bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-indigo-700">Make a Booking</button>
+            </div>
+        </div>
+
+        <!-- PAGE 3.5: REQUESTS -->
+        <div id="requests-page" class="page">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-3">My Requests</h2>
+            <div id="requests-list" class="space-y-6"></div>
+            <div id="no-requests" class="hidden text-center py-16">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <h3 class="mt-2 text-xl font-medium text-gray-900">No Requests Yet</h3>
+                <p class="mt-1 text-sm text-gray-500">You have no pending requests.</p>
+            </div>
+        </div>
+        
+        <!-- PAGE 4: SIGN IN / SIGN UP -->
+        <div id="signin-page" class="page">
+            <div class="max-w-lg mx-auto mt-10 bg-white p-8 rounded-xl shadow-lg">
+                <div class="flex border-b border-gray-200">
+                    <button class="auth-tab-btn active w-1/2 py-4 text-center font-semibold text-indigo-600 border-b-2 border-indigo-600" data-tab="login">Sign In</button>
+                    <button class="auth-tab-btn w-1/2 py-4 text-center font-semibold text-gray-500" data-tab="signup">Create Account</button>
+                </div>
+                <div id="login-tab" class="auth-tab-content active">
+                    <form id="login-form" class="mt-8 space-y-6">
+                        <div><label for="login-email" class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="login-email" name="email" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <div><label for="login-password" class="block text-sm font-medium text-gray-700">Password</label><input type="password" id="login-password" name="password" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Sign In</button>
+                    </form>
+                </div>
+                <div id="signup-tab" class="auth-tab-content">
+                    <form id="signup-form" class="mt-8 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">I am a...</label>
+                            <div class="mt-2 grid grid-cols-2 gap-3">
+                                <label class="border rounded-md py-3 px-3 flex items-center justify-center"><input type="radio" name="role" value="household" class="h-4 w-4 text-indigo-600" checked> <span class="ml-3 text-gray-700">Household</span></label>
+                                <label class="border rounded-md py-3 px-3 flex items-center justify-center"><input type="radio" name="role" value="helper" class="h-4 w-4 text-indigo-600"> <span class="ml-3 text-gray-700">Helper</span></label>
+                            </div>
+                        </div>
+                        <div><label for="signup-name" class="block text-sm font-medium">Full Name</label><input type="text" id="signup-name" name="name" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <div><label for="signup-age" class="block text-sm font-medium">Age</label><input type="number" id="signup-age" name="age" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <div><label for="signup-email" class="block text-sm font-medium">Email</label><input type="email" id="signup-email" name="email" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <div><label for="signup-password" class="block text-sm font-medium">Password</label><input type="password" id="signup-password" name="password" required class="mt-1 w-full p-3 border rounded-lg"></div>
+                        <div id="signup-address-field">
+                            <label for="signup-address" class="block text-sm font-medium">Address</label><textarea id="signup-address" name="address" rows="2" required class="mt-1 w-full p-3 border rounded-lg"></textarea>
+                        </div>
+                        <div id="signup-helper-fields" class="hidden space-y-6">
+                            <div><label for="signup-contact" class="block text-sm font-medium">Contact Number</label><input type="tel" id="signup-contact" name="contact" class="mt-1 w-full p-3 border rounded-lg"></div>
+                            <div>
+                                <label for="signup-skill" class="block text-sm font-medium">Primary Skill</label>
+                                <select id="signup-skill" name="skill_type" class="mt-1 w-full p-3 border rounded-lg"><option>Cook</option><option>Maid</option><option>Babysitter</option><option>Driver</option><option>Gardener</option></select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label for="signup-experience" class="block text-sm font-medium">Experience (Years)</label><input type="number" id="signup-experience" name="experience" class="mt-1 w-full p-3 border rounded-lg"></div>
+                                <div><label for="signup-rate" class="block text-sm font-medium">Rate per Hour (₹)</label><input type="number" id="signup-rate" name="rate_per_hour" class="mt-1 w-full p-3 border rounded-lg"></div>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Create Account</button>
+                    </form>
+                </div>
+                <div id="auth-response" class="mt-4 text-center font-medium"></div>
+            </div>
+        </div>
+        
+        <!-- PAGE 5: USER DASHBOARD -->
+        <div id="dashboard-page" class="page">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b pb-3">My Dashboard</h2>
+            <div id="household-dashboard">
+                <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex flex-col items-center">
+                        <div class="relative h-24 w-24 mb-4">
+                            <img id="dashboard-profile-pic" class="h-full w-full rounded-full object-cover ring-4 ring-indigo-200 hidden" src="" alt="Profile Picture">
+                            <div id="dashboard-initials" class="absolute inset-0 flex items-center justify-center text-indigo-600 font-bold text-4xl bg-indigo-100 rounded-full"></div>
+                            <label for="profile-pic-upload" class="absolute bottom-0 right-0 bg-indigo-600 rounded-full p-2 cursor-pointer hover:bg-indigo-700 transition-colors">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <input type="file" id="profile-pic-upload" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900" id="dashboard-name"></h3>
+                        <p class="text-gray-500" id="dashboard-email"></p>
+                    </div>
+                    <div class="mt-8 border-t pt-6 space-y-4">
+                        <div class="flex"><strong class="w-1/3 text-gray-600">Age:</strong><span class="w-2/3 text-gray-800" id="dashboard-age"></span></div>
+                        <div class="flex"><strong class="w-1/3 text-gray-600">Address:</strong><span class="w-2/3 text-gray-800" id="dashboard-address"></span></div>
+                    </div>
+                    <div class="mt-8 border-t pt-6 text-center">
+                        <button onclick="handleLogout()" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">Log Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Helper Dashboard View -->
+            <div id="helper-dashboard" class="hidden">
+                 <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center space-x-6 mb-6">
+                        <div class="relative h-24 w-24">
+                            <img id="helper-dashboard-profile-pic" class="h-full w-full rounded-full object-cover ring-4 ring-indigo-200 hidden" src="" alt="Profile Picture">
+                            <div id="helper-dashboard-initials" class="absolute inset-0 flex items-center justify-center text-indigo-600 font-bold text-4xl bg-indigo-100 rounded-full"></div>
+                            <label for="helper-profile-pic-upload" class="absolute bottom-0 right-0 bg-indigo-600 rounded-full p-2 cursor-pointer hover:bg-indigo-700 transition-colors">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <input type="file" id="helper-profile-pic-upload" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900" id="helper-dashboard-name"></h3>
+                            <p class="text-gray-500" id="helper-dashboard-email"></p>
+                            <p class="text-gray-500 text-sm mt-1" id="helper-dashboard-skill"></p>
+                        </div>
+                    </div>
+                    <form id="helper-profile-form">
+                        <label for="helper-about" class="block text-sm font-medium text-gray-700">About Me</label>
+                        <textarea id="helper-about" name="about" rows="5" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" placeholder="Tell households a little about yourself, your experience, and your skills..."></textarea>
+                        <div id="helper-profile-response" class="mt-3 text-center font-medium"></div>
+                        <button type="submit" class="mt-4 w-full bg-indigo-600 text-white p-3 rounded-lg font-semibold hover:bg-indigo-700">Save Profile</button>
+                    </form>
+                    <div class="mt-6 border-t pt-6 text-center">
+                        <button onclick="handleLogout()" class="bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600">Log Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Helper Details Modal -->
+    <div id="helper-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none" onclick="closeModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto transform transition-all scale-95 opacity-0" id="helper-modal-content" onclick="event.stopPropagation()">
+            <div class="p-8 text-center">
+                <img id="modal-img" class="h-28 w-28 rounded-full object-cover mx-auto ring-4 ring-indigo-200" src="" alt="Helper Profile">
+                <h3 id="modal-name" class="mt-4 text-2xl font-bold text-gray-900"></h3>
+                <p id="modal-specialty" class="text-indigo-600 font-semibold"></p>
+                <p id="modal-description" class="mt-6 text-gray-600 text-left"></p>
+            </div>
+            <div class="px-6 pb-6 grid grid-cols-2 gap-3">
+                <button id="modal-book-btn" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700">Select & Book</button>
+                <button onclick="closeModal()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
